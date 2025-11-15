@@ -1,0 +1,60 @@
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Preço (R$)</th>
+                <th>Unidade</th>
+                <th>Estoque Atual</th>
+                <th>Status</th>
+                <th class="text-center">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produto in produtos %}
+            <tr>
+                <td>{{ produto.nome }}</td>
+                <td>{{ produto.categoria.nome }}</td>
+                <td>{{ produto.preco_venda|floatformat:2 }}</td>
+                <td>{{ produto.get_unidade_medida_display }}</td>
+                <td>{{ produto.estoque_atual }}</td>
+                <td>
+                    {% if produto.ativo %}
+                        <span class="badge bg-success">Ativo</span>
+                    {% else %}
+                        <span class="badge bg-danger">Inativo</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    <button type="button" class="btn bg-gray btn-sm edit-produto-btn"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editProdutoModal"
+                            data-url="{% url 'editar_produto' produto.id %}"
+                            data-nome="{{ produto.nome }}"
+                            data-categoria="{{ produto.categoria.id }}"
+                            data-unidade_medida="{{ produto.unidade_medida }}"
+                            data-preco_custo="{{ produto.preco_custo|stringformat:'s' }}" data-preco_venda="{{ produto.preco_venda|stringformat:'s' }}"
+                            data-qnt_volume="{{ produto.qnt_volume }}" data-unidade_medida="{{ produto.unidade_medida }}"
+                            data-estoque_atual="{{ produto.estoque_atual|stringformat:'s' }}"
+                            data-estoque_minimo="{{ produto.estoque_minimo|stringformat:'s' }}"
+                            data-estoque_maximo="{{ produto.estoque_maximo|stringformat:'s' }}"
+                            data-ativo="{{ produto.ativo|yesno:'true,false' }}">
+                        Editar
+                    </button>
+                    <!-- Excluir -->
+                    <a href="{% url 'excluir_produto' produto.id %}" 
+                        class="btn btn-sm btn-danger"
+                        onclick="return confirm('Tem certeza que deseja excluir este produto?');">
+                        Excluir
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center">Nenhum produto cadastrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
